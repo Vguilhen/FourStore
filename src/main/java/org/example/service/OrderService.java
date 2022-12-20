@@ -11,6 +11,7 @@ import org.example.model.Order;
 import org.example.model.Product;
 import org.example.model.Sale;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -39,7 +40,7 @@ public class OrderService {
         while (condition) {
             try {
                 menuOrder.showMenuOrder();
-                menuNumber = menuOrder.menuOption();
+                menuNumber = sc.nextInt();
                 if (menuNumber >= 0 && menuNumber <= 5) {
                     switch (menuNumber) {
                         case 0:
@@ -74,7 +75,7 @@ public class OrderService {
                             break;
                     }
                 } else menuOrder.infIvalidMenuOption();
-            } catch (Exception e) {
+            } catch (InputMismatchException e) {
                 menuOrder.infIvalidMenuOption();
                 sc.nextLine();
             }
@@ -116,9 +117,8 @@ public class OrderService {
     private boolean cpfValidation() {
         boolean seq = true;
         while (seq) {
-            try {
                 menuOrder.infWouldCpf();
-                String yN = menuOrder.yN();
+                String yN = sc.nextLine();
                 if (yN.equals("s")) {
                     menuOrder.infCpf();
                     String customerCpf = menuOrder.cpf();
@@ -133,9 +133,6 @@ public class OrderService {
                     cpfValid = "00000000000";
                     seq = false;
                 }
-            } catch (Exception e) {
-                menuOrder.infIvalidYesOrNo();
-            }
         }
         return true;
     }

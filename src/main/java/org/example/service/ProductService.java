@@ -4,6 +4,7 @@ import org.example.communication.MenuProductCommunication;
 import org.example.dao.ProductDao;
 import org.example.model.Product;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -17,6 +18,52 @@ public class ProductService {
     Scanner sc = new Scanner(System.in);
     String proceed;
     boolean condition = true;
+
+    public void productServiceExecute() {
+        ProductService productService = new ProductService();
+        int menuNumber = 0;
+
+        while (condition) {
+            try {
+                menu.showMenuProduct();
+//                menuNumber = menu.menuOption();
+                menuNumber = sc.nextInt();
+                if (menuNumber >= 0 && menuNumber <= 6) {
+                    switch (menuNumber) {
+                        case 0:
+                            condition = false;
+                            break;
+                        case 1:
+                            productService.saveProduct();
+                            continueLoop();
+                            break;
+                        case 2:
+                            productService.listProductService();
+                            continueLoop();
+                            break;
+                        case 3:
+                            productService.findProductService();
+                            continueLoop();
+                            break;
+                        case 4:
+                            productService.updateProductService();
+                            continueLoop();
+                            break;
+                        case 5:
+                            orderService.orderServiceExecute();
+                            condition = false;
+                            break;
+                        case 6:
+                            productService.deleteProductService();
+                            continueLoop();
+                    }
+                } else menu.infIvalidOption();
+            } catch (InputMismatchException e) {
+                menu.infIvalidOption();
+                sc.nextLine();
+            }
+        }
+    }
 
     public void saveProduct() {
         Product product = new Product();
@@ -96,7 +143,7 @@ public class ProductService {
                     menu.infIvalidOption();
                     condition = false;
                 }
-            } catch (Exception e) {
+            } catch (InputMismatchException e) {
                 menu.infIvalidOption();
                 sc.nextLine();
             }
@@ -108,7 +155,6 @@ public class ProductService {
         while (localCond.get()) {
             menu.infSku();
             String sku = menu.sku();
-            try {
                 Optional<Product> findBySku = dao.findBySku(sku);
                 if (findBySku.isPresent()) {
                     dao.delete(sku);
@@ -118,56 +164,6 @@ public class ProductService {
                     menu.infSkuInvalid();
                     localCond.set(true);
                 }
-            } catch (Exception e) {
-                menu.infSkuInvalid();
-                sc.nextLine();
-                localCond.set(true);
-            }
-        }
-    }
-
-    public void productServiceExecute() {
-        ProductService productService = new ProductService();
-        int menuNumber = 0;
-
-        while (condition) {
-            try {
-                menu.showMenuProduct();
-                menuNumber = menu.menuOption();
-                if (menuNumber >= 0 && menuNumber <= 6) {
-                    switch (menuNumber) {
-                        case 0:
-                            condition = false;
-                            break;
-                        case 1:
-                            productService.saveProduct();
-                            continueLoop();
-                            break;
-                        case 2:
-                            productService.listProductService();
-                            continueLoop();
-                            break;
-                        case 3:
-                            productService.findProductService();
-                            continueLoop();
-                            break;
-                        case 4:
-                            productService.updateProductService();
-                            continueLoop();
-                            break;
-                        case 5:
-                            orderService.orderServiceExecute();
-                            condition = false;
-                            break;
-                        case 6:
-                            productService.deleteProductService();
-                            continueLoop();
-                    }
-                } else menu.infIvalidOption();
-            } catch (Exception e) {
-                menu.infIvalidOption();
-                sc.nextLine();
-            }
         }
     }
 }
